@@ -20,7 +20,18 @@ lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode[";"] = ":"
--- lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<leader>1"] = ":BufferLineGoToBuffer 1<CR>"
+lvim.keys.normal_mode["<leader>2"] = ":BufferLineGoToBuffer 2<CR>"
+lvim.keys.normal_mode["<leader>3"] = ":BufferLineGoToBuffer 3<CR>"
+lvim.keys.normal_mode["<leader>4"] = ":BufferLineGoToBuffer 4<CR>"
+lvim.keys.normal_mode["<leader>5"] = ":BufferLineGoToBuffer 5<CR>"
+lvim.keys.normal_mode["<leader>6"] = ":BufferLineGoToBuffer 6<CR>"
+lvim.keys.normal_mode["<leader>7"] = ":BufferLineGoToBuffer 7<CR>"
+lvim.keys.normal_mode["<leader>8"] = ":BufferLineGoToBuffer 8<CR>"
+lvim.keys.normal_mode["<leader>9"] = ":BufferLineGoToBuffer 9<CR>"
+lvim.keys.normal_mode["[t"] = vim.diagnostic.goto_next
+lvim.keys.normal_mode["]t"] = vim.diagnostic.goto_prev
+
 -- lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 -- unmap a default keymapping
 -- vim.keymap.del("n", "<C-Up>")
@@ -63,6 +74,7 @@ lvim.builtin.which_key.mappings["S"] = {
   v = { ":vsplit<CR>", "Split Veritcally" },
   h = { ":split<CR>", "Split Horizontally" }
 }
+
 
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
