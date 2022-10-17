@@ -27,6 +27,7 @@ lvim.keys.normal_mode[";"] = ":"
 -- override a default keymapping
 -- lvim.keys.normal_mode["<C-q>"] = ":q<cr>" -- or vim.keymap.set("n", "<C-q>", ":q<cr>" )
 
+
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
 -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
 -- local _, actions = pcall(require, "telescope.actions")
@@ -72,6 +73,46 @@ lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
+lvim.builtin.lualine.sections.lualine_c = { "lsp", "branch", "diagnostics", "mode" }
+
+local linters = require "lvim.lsp.null-ls.linters"
+linters.setup {
+  { command = "flake8", filetypes = { "python" } },
+  {
+    -- each linter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+    command = "shellcheck",
+    ---@usage arguments to pass to the formatter
+    -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
+    extra_args = { "--severity", "warning" },
+  },
+  {
+    command = "codespell",
+    ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+    filetypes = { "javascript", "python" },
+  },
+  {
+    command = "eslint_d",
+    filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "vue", "svelte" }
+    ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+  },
+}
+
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  { command = "black", filetypes = { "python" } },
+  { command = "isort", filetypes = { "python" } },
+  {
+    -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+    command = "eslint_d",
+    filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "vue", "svelte" }
+    ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+  },
+  {
+    -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+    command = "prettierd",
+    filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "vue", "svelte" }
+  },
+}
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
   "bash",
@@ -187,4 +228,5 @@ lvim.builtin.treesitter.highlight.enabled = true
 --     -- let treesitter use bash highlight for zsh files as well
 --     require("nvim-treesitter.highlight").attach(0, "bash")
 --   end,
+-- })
 -- })
