@@ -1,17 +1,7 @@
---[[
-lvim is the global options object
-
-Linters should be
-filled in as strings with either
-a global executable or a path to
-an executable
-]]
--- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
-
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "onedarker"
+lvim.colorscheme = "sonokai"
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
@@ -30,10 +20,15 @@ lvim.keys.normal_mode["<leader>6"] = ":BufferLineGoToBuffer 6<CR>"
 lvim.keys.normal_mode["<leader>7"] = ":BufferLineGoToBuffer 7<CR>"
 lvim.keys.normal_mode["<leader>8"] = ":BufferLineGoToBuffer 8<CR>"
 lvim.keys.normal_mode["<leader>9"] = ":BufferLineGoToBuffer 9<CR>"
+
 lvim.keys.normal_mode["[t"] = vim.diagnostic.goto_next
 lvim.keys.normal_mode["]t"] = vim.diagnostic.goto_prev
 
--- lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
+lvim.keys.normal_mode["<S-q>"] = ":BufferKill<CR>"
+
+lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
+
 -- unmap a default keymapping
 -- vim.keymap.del("n", "s")
 -- vim.keymap.del("n", "<C-f>")
@@ -209,6 +204,12 @@ lvim.plugins = {
       vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
     end,
   },
+  {
+    "sainnhe/sonokai",
+    config = function()
+      vim.g.sonokai_style = 'shusia'
+    end,
+  }
 }
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- vim.api.nvim_create_autocmd("BufEnter", {
@@ -223,4 +224,4 @@ lvim.plugins = {
 --     require("nvim-treesitter.highlight").attach(0, "bash")
 --   end,
 -- })
--- })
+-- })=
