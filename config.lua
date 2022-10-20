@@ -97,15 +97,15 @@ local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
   {
     -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+    command = "prettierd",
+    filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "vue", "svelte" }
+  },
+  {
+    -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
     command = "eslint_d",
     filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "vue", "svelte" }
     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
   },
-  --   {
-  --     -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
-  --     command = "prettierd",
-  --     filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "vue", "svelte" }
-  --   },
 }
 
 local code_actions = require "lvim.lsp.null-ls.code_actions"
@@ -185,6 +185,32 @@ lvim.builtin.treesitter.highlight.enabled = true
 --     },
 -- }
 lvim.plugins = {
+  -- { 'kkharji/sqlite.lua' },
+  {
+    "romgrk/nvim-treesitter-context",
+    config = function()
+      require("treesitter-context").setup {
+        enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+        throttle = true, -- Throttles plugin updates (may improve performance)
+        max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+        patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+          -- For all filetypes
+          -- Note that setting an entry here replaces all other patterns for this entry.
+          -- By setting the 'default' entry below, you can control which nodes you want to
+          -- appear in the context window.
+          default = {
+            'class',
+            'function',
+            'method',
+          },
+        },
+      }
+    end
+  },
+  {
+    "nvim-treesitter/playground",
+    event = "BufRead",
+  },
   {
     "tzachar/cmp-tabnine",
     run = "./install.sh",
@@ -196,6 +222,55 @@ lvim.plugins = {
     cmd = "Codi",
   },
   {
+    "nacro90/numb.nvim",
+    event = "BufRead",
+    config = function()
+      require("numb").setup {
+        show_numbers = true, -- Enable 'number' for the window while peeking
+        show_cursorline = true, -- Enable 'cursorline' for the window while peeking
+      }
+    end,
+  },
+  {
+    "andymass/vim-matchup",
+    event = "CursorMoved",
+    config = function()
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end,
+  },
+  {
+    "p00f/nvim-ts-rainbow",
+  },
+  {
+    "s1n7ax/nvim-window-picker",
+    tag = "1.*",
+    config = function()
+      require("window-picker").setup({
+        autoselect_one = true,
+        include_current = false,
+        filter_rules = {
+          -- filter using buffer options
+          bo = {
+            -- if the file type is one of following, the window will be ignored
+            filetype = { "neo-tree", "neo-tree-popup", "notify", "quickfix" },
+
+            -- if the buffer type is one of following, the window will be ignored
+            buftype = { "terminal" },
+          },
+        },
+        other_win_hl_color = "#e35e4f",
+      })
+    end,
+  },
+  {
+    "f-person/git-blame.nvim",
+    event = "BufRead",
+    config = function()
+      vim.cmd "highlight default link gitblame SpecialComment"
+      vim.g.gitblame_enabled = 0
+    end,
+  },
+  {
     "phaazon/hop.nvim",
     event = "BufRead",
     config = function()
@@ -204,13 +279,173 @@ lvim.plugins = {
       vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
     end,
   },
+  -- {
+  --   "AckslD/nvim-neoclip.lua",
+  --   requires = {
+  --     { 'kkharji/sqlite.lua', module = 'sqlite' },
+  --     { 'nvim-telescope/telescope.nvim' },
+  --   },
+  --   config = function()
+  --     require('neoclip').setup()
+  --   end,
+  -- },
+  {
+    "ruifm/gitlinker.nvim",
+    event = "BufRead",
+    config = function()
+      require("gitlinker").setup {
+        opts = {
+          -- remote = 'github', -- force the use of a specific remote
+          -- adds current line nr in the url for normal mode
+          add_current_line_on_normal_mode = true,
+          -- callback for what to do with the url
+          action_callback = require("gitlinker.actions").open_in_browser,
+          -- print the url after performing the action
+          print_url = false,
+          -- mapping to call url generation
+          mappings = "<leader>gy",
+        },
+      }
+    end,
+    requires = "nvim-lua/plenary.nvim",
+  },
+  {
+    'wojciechkepka/vim-github-dark'
+  },
+  {
+    'morhetz/gruvbox'
+  },
   {
     "sainnhe/sonokai",
     config = function()
       vim.g.sonokai_style = 'shusia'
     end,
+  },
+  {
+    "folke/trouble.nvim",
+    cmd = "TroubleToggle",
+  },
+  -- You must install glow globally
+  -- https://github.com/charmbracelet/glow
+  -- brew install glow
+  {
+    "npxbr/glow.nvim",
+    ft = { "markdown" }
+  },
+  {
+    "folke/todo-comments.nvim",
+    event = "BufRead",
+    config = function()
+      require("todo-comments").setup()
+    end,
+  },
+  {
+    "ethanholz/nvim-lastplace",
+    event = "BufRead",
+    config = function()
+      require("nvim-lastplace").setup({
+        lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
+        lastplace_ignore_filetype = {
+          "gitcommit", "gitrebase", "svn", "hgcommit",
+        },
+        lastplace_open_folds = true,
+      })
+    end,
+  },
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre", -- this will only start session saving when an actual file was opened
+    module = "persistence",
+    config = function()
+      require("persistence").setup {
+        dir = vim.fn.expand(vim.fn.stdpath "config" .. "/session/"),
+        options = { "buffers", "curdir", "tabpages", "winsize" },
+      }
+    end,
+  },
+  {
+    "itchyny/vim-cursorword",
+    event = { "BufEnter", "BufNewFile" },
+    config = function()
+      vim.api.nvim_command("augroup user_plugin_cursorword")
+      vim.api.nvim_command("autocmd!")
+      vim.api.nvim_command("autocmd FileType NvimTree,lspsagafinder,dashboard,vista let b:cursorword = 0")
+      vim.api.nvim_command("autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
+      vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
+      vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
+      vim.api.nvim_command("augroup END")
+    end
+  },
+  { "tpope/vim-repeat" },
+  {
+    "felipec/vim-sanegx",
+    event = "BufRead",
+  },
+  {
+    "tpope/vim-surround",
+
+    -- make sure to change the value of `timeoutlen` if it's not triggering correctly, see https://github.com/tpope/vim-surround/issues/117
+    -- setup = function()
+    --  vim.o.timeoutlen = 500
+    -- end
+  },
+  {
+    "wakatime/vim-wakatime"
   }
+  -- telescope
+  -- {
+  --   "nvim-telescope/telescope-frecency.nvim",
+  --   config = function()
+  --     require "telescope".load_extension("frecency")
+  --   end,
+  --   requires = { "kkharji/sqlite.lua" }
+  -- }
 }
+
+-- Telescope
+-- lvim.builtin.telescope.on_config_done = function(telescope)
+--   pcall(telescope.load_extension, "frecency")
+--   pcall(telescope.load_extension, "neoclip")
+--   -- any other extensions loading
+-- end
+
+-- example mappings you can place in some other place
+-- An awesome method to jump to windows
+local picker = require('window-picker')
+
+vim.keymap.set("n", ",w", function()
+  local picked_window_id = picker.pick_window({
+    include_current_win = true
+  }) or vim.api.nvim_get_current_win()
+  vim.api.nvim_set_current_win(picked_window_id)
+end, { desc = "Pick a window" })
+
+-- Swap two windows using the awesome window picker
+local function swap_windows()
+  local window = picker.pick_window({
+    include_current_win = false
+  })
+  local target_buffer = vim.fn.winbufnr(window)
+  -- Set the target window to contain current buffer
+  vim.api.nvim_win_set_buf(window, 0)
+  -- Set current window to contain target buffer
+  vim.api.nvim_win_set_buf(0, target_buffer)
+end
+
+vim.keymap.set('n', ',W', swap_windows, { desc = 'Swap windows' })
+
+
+-- rainbow plugin
+lvim.builtin.treesitter.rainbow.enable = true
+
+-- session
+lvim.builtin.which_key.mappings["S"] = {
+  name = "Session",
+  c = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" },
+  l = { "<cmd>lua require('persistence').load({ last = true })<cr>", "Restore last session" },
+  Q = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" },
+}
+
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- vim.api.nvim_create_autocmd("BufEnter", {
 --   pattern = { "*.json", "*.jsonc" },
