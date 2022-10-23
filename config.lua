@@ -39,8 +39,7 @@ lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 vim.keymap.set('i', "<F5>", "<ESC>:w<CR>a")
 
 
-lvim.keys.insert_mode["F5"] = ":w"
-
+lvim.keys.insert_mode["ww"] = "<cmd>:w<CR>"
 
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
 -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
