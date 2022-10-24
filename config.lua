@@ -28,6 +28,8 @@ lvim.keys.normal_mode["<leader>7"] = ":BufferLineGoToBuffer 7<CR>"
 lvim.keys.normal_mode["<leader>8"] = ":BufferLineGoToBuffer 8<CR>"
 lvim.keys.normal_mode["<leader>9"] = ":BufferLineGoToBuffer 9<CR>"
 
+
+
 lvim.keys.normal_mode["[t"] = vim.diagnostic.goto_next
 lvim.keys.normal_mode["]t"] = vim.diagnostic.goto_prev
 
@@ -38,8 +40,6 @@ lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 
 vim.keymap.set('i', "<F5>", "<ESC>:w<CR>a")
 
-
-lvim.keys.insert_mode["ww"] = "<cmd>:w<CR>"
 
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
 -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
